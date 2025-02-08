@@ -62,5 +62,5 @@ def plot_examples(low_res_folder, gen):
                 .unsqueeze(0)
                 .to(config.DEVICE)
             )
-        save_image(upscaled_img * 0.5 + 0.5, f"saved/{file}")
+        save_image(upscaled_img * 0.5 + 0.5, f"/content/generated_images/{file}")
     gen.train()
