@@ -10,24 +10,28 @@ class MyImageFolder(Dataset):
         super(MyImageFolder, self).__init__()
         self.data = []
         self.root_dir = root_dir
-        self.class_names = os.listdir(root_dir)
-
-        for index, name in enumerate(self.class_names):
-            files = os.listdir(os.path.join(root_dir, name))
-            self.data += list(zip(files, [index] * len(files)))
+        # Assume each first-level directory is a class
+        self.class_names = sorted(os.listdir(root_dir))
+        for index, class_name in enumerate(self.class_names):
+            class_dir = os.path.join(root_dir, class_name)
+            # Walk through all subdirectories
+            for subdir, _, files in os.walk(class_dir):
+                for file in files:
+                    if file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                        # Save the full path to the image and its class index
+                        self.data.append((os.path.join(subdir, file), index))
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, index):
-        img_file, label = self.data[index]
-        root_and_dir = os.path.join(self.root_dir, self.class_names[label])
-
-        image = np.array(Image.open(os.path.join(root_and_dir, img_file)))
+        img_path, label = self.data[index]
+        image = np.array(Image.open(img_path))
         image = config.both_transforms(image=image)["image"]
         high_res = config.highres_transform(image=image)["image"]
         low_res = config.lowres_transform(image=image)["image"]
         return low_res, high_res
+
 
 
 def test():

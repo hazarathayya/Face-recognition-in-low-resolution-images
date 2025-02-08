@@ -51,11 +51,11 @@ def train_fn(loader, disc, gen, opt_gen, opt_disc, mse, bce, vgg_loss):
         opt_gen.step()
 
         if idx % 200 == 0:
-            plot_examples("test_images/", gen)
+            plot_examples("/content/test_images/", gen)
 
 
 def main():
-    dataset = MyImageFolder(root_dir="new_data/")
+    dataset = MyImageFolder(root_dir="/content/flickr_face")
     loader = DataLoader(
         dataset,
         batch_size=config.BATCH_SIZE,
@@ -64,7 +64,7 @@ def main():
         num_workers=config.NUM_WORKERS,
     )
     gen = Generator(in_channels=3).to(config.DEVICE)
-    disc = Discriminator(img_channels=3).to(config.DEVICE)
+    disc = Discriminator(in_channels=3).to(config.DEVICE)
     opt_gen = optim.Adam(gen.parameters(), lr=config.LEARNING_RATE, betas=(0.9, 0.999))
     opt_disc = optim.Adam(disc.parameters(), lr=config.LEARNING_RATE, betas=(0.9, 0.999))
     mse = nn.MSELoss()

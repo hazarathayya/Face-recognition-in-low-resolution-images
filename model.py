@@ -112,7 +112,7 @@ class Discriminator(nn.Module):
         return self.classifier(x)
 
 def test():
-    low_resolution = 24  # 96x96 -> 24x24
+    low_resolution = 56  # 96x96 -> 24x24
     with torch.cuda.amp.autocast():
         x = torch.randn((5, 3, low_resolution, low_resolution))
         gen = Generator()
